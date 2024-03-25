@@ -1,6 +1,8 @@
 package com.example.collegephonebook;
 
 import android.app.Application;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -25,7 +27,18 @@ public class ContactRepository {
 
     public void insert(Contact contact) {
         executorService.execute(() -> {
-            contactDao.insert(contact);
+            AppDatabase.databaseWriteExecutor.execute(() -> {
+                contactDao.insert(contact);
+            });
         });
     }
+
+    public void delete(Contact contact) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+        //executorService.execute(() -> {
+            //Log.d("ContactRepository", "Deleting contact: " + contact.getName());
+            contactDao.delete(contact);
+        });
+    }
+
 }
